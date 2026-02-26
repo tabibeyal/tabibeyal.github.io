@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eyal — Technical Writer</title>
+  <meta name="description" content="Eyal Tabib — Technical Writer portfolio. End-user documentation, API docs, audience analysis, and content restructuring for international tech companies." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -40,7 +41,7 @@
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 1000;
+      z-index: 50;
       opacity: 0.5;
     }
 
@@ -196,7 +197,6 @@
       gap: 2rem 3rem;
     }
 
-    .stat-item {}
 
     .stat-number {
       font-family: var(--serif);
@@ -539,6 +539,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       font-family: var(--mono);
       font-size: 0.68rem;
       letter-spacing: 0.1em;
@@ -584,7 +586,7 @@
 <body>
 
   <!-- NAV -->
-  <nav>
+  <nav aria-label="Main navigation">
     <span class="nav-logo">Eyal · Technical Writer</span>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
@@ -593,6 +595,8 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
+
+  <main>
 
   <!-- HERO -->
   <section id="hero">
@@ -647,7 +651,7 @@
           real documentation skills: audience analysis, content restructuring, and writing that
           people can actually follow.
         </p>
-    </div>
+      </div>
       <div class="about-principles">
         <div class="principles-title">Core principles</div>
         <div class="principle-item">
@@ -816,11 +820,11 @@
           <span class="contact-link-label">Email</span>
           <span class="contact-link-arrow">↗</span>
         </a>
-        <a href="https://linkedin.com/in/eyal-tabib-4a74813b3" target="_blank" class="contact-link-item">
+        <a href="https://linkedin.com/in/eyal-tabib-4a74813b3" target="_blank" rel="noopener noreferrer" class="contact-link-item">
           <span class="contact-link-label">LinkedIn</span>
           <span class="contact-link-arrow">↗</span>
         </a>
-        <a href="https://github.com/tabibeyal" target="_blank" class="contact-link-item">
+        <a href="https://github.com/tabibeyal" target="_blank" rel="noopener noreferrer" class="contact-link-item">
           <span class="contact-link-label">GitHub</span>
           <span class="contact-link-arrow">↗</span>
         </a>
@@ -832,7 +836,13 @@
     </div>
   </section>
 
+  </main>
+
   <!-- FOOTER -->
   <footer>
     <span>Eyal · Technical Writer · Portfolio</span>
-    <span>Built with HTML — hosted on GitHub Pages
+    <span>Built with HTML — hosted on GitHub Pages</span>
+  </footer>
+
+</body>
+</html>

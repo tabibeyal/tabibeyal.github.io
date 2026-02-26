@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NextDNS Setup Screen Redesign — Eyal Tabib</title>
+  <meta name="description" content="Case study: Identifying a security documentation gap in NextDNS and redesigning the Setup screen with a Caution banner and color-coded sensitive values." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -39,7 +40,7 @@
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 1000;
+      z-index: 50;
       opacity: 0.5;
     }
 
@@ -211,8 +212,6 @@
       align-items: start;
     }
 
-    .visual-panel {}
-
     .visual-label {
       font-family: var(--mono);
       font-size: 0.65rem;
@@ -362,6 +361,8 @@
       padding: 1.5rem 3rem;
       display: flex;
       justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       font-family: var(--mono);
       font-size: 0.68rem;
     }
@@ -392,10 +393,12 @@
 </head>
 <body>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
     <a href="index.html" class="nav-back">← Back to portfolio</a>
   </nav>
+
+  <main>
 
   <div class="project-hero">
     <div class="project-category">UI documentation gap analysis</div>
@@ -464,12 +467,12 @@
       <div class="visual-comparison">
         <div class="visual-panel">
           <div class="visual-label before-label">Original</div>
-          <img src=nextdns_baseline1.jpg alt="Original NextDNS Setup screen — no security warning" />
+          <img src="nextdns_baseline1.jpg" alt="Original NextDNS Setup screen — no security warning" />
           <div class="visual-caption">Profile ID and endpoints displayed with no warning or visual distinction.</div>
         </div>
         <div class="visual-panel">
           <div class="visual-label after-label">Redesigned</div>
-          <img src=nextdns_edited.jpg alt="Redesigned NextDNS Setup screen — with Caution banner and color-coded sensitive values" />
+          <img src="nextdns_edited.jpg" alt="Redesigned NextDNS Setup screen — with Caution banner and color-coded sensitive values" />
           <div class="visual-caption">Yellow Caution banner inserted above the data. All sensitive values recolored to match.</div>
         </div>
       </div>
@@ -544,6 +547,8 @@
   <div class="project-cta">
     <a href="index.html" class="cta-link secondary">← Back to portfolio</a>
   </div>
+
+  </main>
 
   <footer>
     <span>Eyal Tabib · Technical Writer · Portfolio</span>

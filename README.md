@@ -1,6 +1,6 @@
 # Eyal — Technical Writer
 
-I write documentation that non-technical users can act on confidently.
+I write documentation that non-technical users can act on confidently — and that engineers can trust for accuracy. 
 
 ## Portfolio
 Visit my portfolio site: [tabibeyal.github.io](https://tabibeyal.github.io)

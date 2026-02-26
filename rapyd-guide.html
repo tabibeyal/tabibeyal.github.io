@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Links — Rapyd API Reference · Eyal Tabib</title>
+  <meta name="description" content="Restructured Rapyd Payment Links API reference for backend developers. Scope definition, actor-based workflow, and parameter tables for Rapyd Collect integration." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -39,7 +40,7 @@
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 1000;
+      z-index: 50;
       opacity: 0.5;
     }
 
@@ -358,6 +359,8 @@
       padding: 1.5rem 3rem;
       display: flex;
       justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       font-family: var(--mono);
       font-size: 0.68rem;
     }
@@ -380,10 +383,12 @@
 </head>
 <body>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
     <a href="rapyd.html" class="nav-back">← Back to case study</a>
   </nav>
+
+  <main>
 
   <div class="doc-header">
     <div class="doc-label">Technical Document · Portfolio Sample</div>
@@ -526,6 +531,8 @@
     <a href="rapyd.html" class="footer-link primary">← Read the case study</a>
     <a href="index.html" class="footer-link secondary">Back to portfolio</a>
   </div>
+
+  </main>
 
   <footer>
     <span>Eyal Tabib · Technical Writer · Portfolio Sample</span>

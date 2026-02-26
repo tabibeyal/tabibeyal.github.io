@@ -1,16 +1,16 @@
-## Hi there 👋
+# Eyal — Technical Writer
 
-<!--
-**tabibeyal/tabibeyal** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+I write documentation that non-technical users can act on confidently.
 
-Here are some ideas to get you started:
+## Portfolio
+Visit my portfolio site: [tabibeyal.github.io](https://tabibeyal.github.io)
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Projects
+- **NextDNS Security Guide** — End-user security documentation
+- **Cisco VPN User Guide** — End-user guide rewrite
+- **Rapyd Payment Links** — API documentation analysis and rewrite
+
+## Background
+Transitioning into technical writing with a background in 
+explaining complex technology to non-technical audiences.
+Currently completing a diploma in English.

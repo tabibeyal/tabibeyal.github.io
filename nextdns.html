@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NextDNS Setup Screen Redesign — Eyal Tabib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f0e8;
+      --accent: #c84b2f;
+      --accent-light: #f0d9d3;
+      --muted: #7a7060;
+      --rule: #d4cfc4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    /* HERO */
+    .project-hero {
+      padding: 8rem 3rem 4rem;
+      border-bottom: 1px solid var(--rule);
+      max-width: 860px;
+    }
+
+    .project-category {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .project-category::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .project-subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+    }
+
+    .meta-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.5rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    .meta-key {
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .meta-val { color: var(--ink); }
+
+    /* CONTENT */
+    .content { max-width: 860px; padding: 0 3rem; }
+
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 1rem;
+      max-width: 680px;
+    }
+
+    p strong { color: var(--ink); font-weight: 500; }
+
+    /* FAILURES */
+    .failures {
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .failure-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1rem 1.25rem;
+      background: #ede8de;
+      border-left: 3px solid var(--accent);
+    }
+
+    .failure-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 0.15rem;
+    }
+
+    .failure-text { font-size: 0.9rem; color: var(--ink); }
+    .failure-text strong { display: block; margin-bottom: 0.2rem; font-weight: 500; }
+    .failure-detail { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+
+    /* VISUAL COMPARISON */
+    .visual-comparison {
+      margin: 2rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .visual-panel {}
+
+    .visual-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .visual-label.before-label { color: var(--muted); }
+    .visual-label.after-label { color: #2a7a3b; }
+
+    .visual-label::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .visual-panel img {
+      width: 100%;
+      border: 1px solid var(--rule);
+      display: block;
+    }
+
+    .visual-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      font-style: italic;
+    }
+
+    .comparison-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding: 0.85rem 1.1rem;
+      background: var(--accent-light);
+      border-left: 2px solid var(--accent);
+      font-style: italic;
+      margin-top: 1.5rem;
+    }
+
+    /* PROCESS */
+    .process-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 1.5rem 0;
+    }
+
+    .process-step {
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      align-items: start;
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1;
+      opacity: 0.4;
+    }
+
+    .step-text { font-size: 0.92rem; color: var(--ink); padding-top: 0.2rem; }
+    .step-text strong { display: block; font-weight: 500; margin-bottom: 0.25rem; }
+    .step-detail { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin-top: 1.5rem;
+    }
+
+    .skill-cell {
+      background: var(--paper);
+      padding: 1.25rem 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .skill-cell::before {
+      content: '→';
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    /* CTA */
+    .project-cta {
+      padding: 4rem 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.75rem;
+      transition: background 0.2s;
+    }
+
+    .cta-link:hover { background: var(--accent); }
+
+    .cta-link.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+    }
+
+    .cta-link.secondary:hover {
+      background: var(--accent-light);
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.4);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.5rem; }
+      .project-hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .visual-comparison { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .project-cta { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .project-hero > * {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .project-category { animation-delay: 0.1s; }
+    h1 { animation-delay: 0.2s; }
+    .project-subtitle { animation-delay: 0.3s; }
+    .meta-table { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
+    <a href="index.html" class="nav-back">← Back to portfolio</a>
+  </nav>
+
+  <div class="project-hero">
+    <div class="project-category">UI documentation gap analysis</div>
+    <h1>NextDNS Setup Screen<br>Redesign</h1>
+    <p class="project-subtitle">Identifying and fixing a security documentation gap in a real product interface</p>
+    <div class="meta-table">
+      <span class="meta-key">Source</span>
+      <span class="meta-val">NextDNS mobile app — Setup screen (nextdns.io)</span>
+      <span class="meta-key">Deliverable</span>
+      <span class="meta-val">Redesigned UI screenshot with security warning and annotated color system</span>
+      <span class="meta-key">Tools applied</span>
+      <span class="meta-val">Forum research, documentation gap analysis, Special Notices conventions, Python, Pillow</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- THE PROBLEM -->
+    <div class="section">
+      <div class="section-label">01 — The Problem</div>
+      <h2>Sensitive data, no warning</h2>
+      <p>
+        The NextDNS Setup screen displays a user's <strong>Profile ID</strong> — a sensitive credential
+        that grants full access to their DNS filtering configuration — across four endpoint formats,
+        with no indication that the data is sensitive or should be protected.
+      </p>
+      <p>
+        A user sharing a screenshot for support, a common practice, exposes their account to
+        unauthorized access. <strong>This is a documentation gap, not a UI bug.</strong>
+        The data is correct. The context is missing.
+      </p>
+      <p>
+        Forum research confirmed the risk: a warning post in the NextDNS community raised the
+        concern, and two recent posts confirmed it — users sharing Setup screen screenshots
+        with their Profile ID fully visible.
+      </p>
+
+      <div class="failures">
+        <div class="failure-item">
+          <span class="failure-num">01</span>
+          <div class="failure-text">
+            <strong>Missing security context</strong>
+            <span class="failure-detail">No warning appears before sensitive data is displayed. A user has no indication that the Profile ID is a credential, not just an identifier.</span>
+          </div>
+        </div>
+        <div class="failure-item">
+          <span class="failure-num">02</span>
+          <div class="failure-text">
+            <strong>No visual hierarchy for sensitive values</strong>
+            <span class="failure-detail">The Profile ID and all derived endpoint values appear in the same style as static infrastructure addresses. Nothing distinguishes sensitive from non-sensitive data.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEFORE / AFTER -->
+    <div class="section">
+      <div class="section-label">02 — Before &amp; After</div>
+      <h2>The redesigned screen</h2>
+      <p>
+        The original screen presents the Profile ID and all endpoint values with no security context.
+        The redesigned screen inserts a yellow Caution banner at the exact point where the Profile ID
+        first appears, and recolors all sensitive values to match the warning signal.
+      </p>
+
+      <div class="visual-comparison">
+        <div class="visual-panel">
+          <div class="visual-label before-label">Original</div>
+          <img src="nextdns_baseline_v2.jpg" alt="Original NextDNS Setup screen — no security warning" />
+          <div class="visual-caption">Profile ID and endpoints displayed with no warning or visual distinction.</div>
+        </div>
+        <div class="visual-panel">
+          <div class="visual-label after-label">Redesigned</div>
+          <img src="nextdns_edited_v9.jpg" alt="Redesigned NextDNS Setup screen — with Caution banner and color-coded sensitive values" />
+          <div class="visual-caption">Yellow Caution banner inserted above the data. All sensitive values recolored to match.</div>
+        </div>
+      </div>
+
+      <div class="comparison-note">
+        Yellow (Caution) was selected based on <strong>Special Notices conventions</strong>: the standard
+        signal for potential harm to data or equipment. The color is applied consistently across all
+        sensitive values so the warning signal carries through the entire screen.
+      </div>
+    </div>
+
+    <!-- THE PROCESS -->
+    <div class="section">
+      <div class="section-label">03 — The Process</div>
+      <h2>How I identified and solved the gap</h2>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">1</span>
+          <div class="step-text">
+            <strong>Identified the gap through forum research</strong>
+            <span class="step-detail">Found a warning post in the NextDNS community raising the concern. Two additional recent posts confirmed it — real users sharing screenshots with their Profile ID fully visible.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">2</span>
+          <div class="step-text">
+            <strong>Mapped two documentation failures</strong>
+            <span class="step-detail">Missing security context before sensitive data is displayed, and no visual hierarchy to distinguish sensitive values from static infrastructure addresses.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">3</span>
+          <div class="step-text">
+            <strong>Selected yellow based on Special Notices conventions</strong>
+            <span class="step-detail">Yellow (Caution) is the standard signal for potential harm to data or equipment. Applied consistently so the warning signal is meaningful, not decorative.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">4</span>
+          <div class="step-text">
+            <strong>Recolored all sensitive values to match the banner</strong>
+            <span class="step-detail">Profile ID and all derived endpoint values share the same color as the warning banner — creating a single, consistent visual signal throughout the screen.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">5</span>
+          <div class="step-text">
+            <strong>Executed the edit in Python with Pillow</strong>
+            <span class="step-detail">Canva requires a public HTTPS URL and could not access the local screenshot. Used Python's Pillow library to insert the banner and recolor the sensitive values with pixel-level precision.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY SKILLS -->
+    <div class="section">
+      <div class="section-label">04 — Key Skills Demonstrated</div>
+      <h2>What this project shows</h2>
+      <div class="skills-grid">
+        <div class="skill-cell">Forum-based gap analysis</div>
+        <div class="skill-cell">Special Notices conventions</div>
+        <div class="skill-cell">Visual risk communication</div>
+        <div class="skill-cell">Audience-centered structure</div>
+        <div class="skill-cell">Screenshot annotation</div>
+        <div class="skill-cell">Plain-language security docs</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="project-cta">
+    <a href="index.html" class="cta-link secondary">← Back to portfolio</a>
+  </div>
+
+  <footer>
+    <span>Eyal Tabib · Technical Writer · Portfolio</span>
+    <span>Source: nextdns.io</span>
+  </footer>
+
+</body>
+</html>

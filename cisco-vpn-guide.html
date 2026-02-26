@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connecting to Your Company Network Remotely — Eyal Tabib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f0e8;
+      --accent: #c84b2f;
+      --accent-light: #f0d9d3;
+      --muted: #7a7060;
+      --rule: #d4cfc4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    /* ── DOCUMENT HEADER ── */
+    .doc-header {
+      padding: 8rem 3rem 3rem;
+      max-width: 760px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .doc-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .doc-label::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .doc-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .doc-subtitle {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .doc-meta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── DOCUMENT BODY ── */
+    .doc-body {
+      max-width: 760px;
+      padding: 0 3rem 6rem;
+    }
+
+    /* Section headings */
+    .doc-body h2 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      letter-spacing: -0.01em;
+      margin: 3rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* Term definitions */
+    .term-block {
+      margin: 1.25rem 0;
+      padding: 1.25rem 1.5rem;
+      border-left: 3px solid var(--rule);
+      background: #ede8de;
+    }
+
+    .term-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
+    .term-def {
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+
+    /* Body paragraphs */
+    .doc-body p {
+      font-size: 0.97rem;
+      color: var(--ink);
+      margin: 0.9rem 0;
+      max-width: 640px;
+    }
+
+    /* Intro checklist */
+    .intro-list {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .intro-list li {
+      font-size: 0.95rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: var(--ink);
+    }
+
+    .intro-list li::before {
+      content: '✓';
+      color: #2a7a3b;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    /* Scope note */
+    .scope-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid var(--rule);
+      margin: 1.25rem 0;
+    }
+
+    /* Before you connect items */
+    .prereq-block {
+      margin: 1rem 0;
+    }
+
+    .prereq-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    /* Steps */
+    .steps {
+      list-style: none;
+      margin: 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+    }
+
+    .step {
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 1rem;
+      padding: 1.1rem 1.5rem;
+      align-items: start;
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      color: var(--accent);
+      opacity: 0.5;
+      line-height: 1.4;
+    }
+
+    .step-content {
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding-top: 0.15rem;
+    }
+
+    .step-content strong { font-weight: 500; }
+
+    .platform-note {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding-left: 0.75rem;
+      border-left: 2px solid var(--rule);
+    }
+
+    /* Note box */
+    .note-box {
+      background: #FFF3CD;
+      border: 1px solid #E0A800;
+      border-left: 4px solid #E0A800;
+      padding: 0.85rem 1.25rem;
+      margin: 0.75rem 0;
+      font-size: 0.88rem;
+      color: #533F03;
+    }
+
+    .note-box strong { color: #856404; }
+
+    /* Troubleshooting entries */
+    .trouble-entry {
+      margin: 1.5rem 0;
+      border: 1px solid var(--rule);
+    }
+
+    .trouble-symptom {
+      background: #ede8de;
+      padding: 0.85rem 1.25rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .trouble-body {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .trouble-row {
+      display: grid;
+      grid-template-columns: 5rem 1fr;
+      gap: 1rem;
+      font-size: 0.9rem;
+      align-items: baseline;
+    }
+
+    .trouble-key {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .trouble-val { color: var(--ink); }
+
+    .trouble-steps {
+      list-style: none;
+      margin-top: 0.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .trouble-steps li {
+      font-size: 0.88rem;
+      color: var(--ink);
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+
+    .trouble-steps li::before {
+      content: counter(step-counter) '.';
+      counter-increment: step-counter;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .trouble-steps { counter-reset: step-counter; }
+
+    /* ── FOOTER NAV ── */
+    .doc-footer-nav {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .footer-link.primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .footer-link.primary:hover { background: var(--accent); }
+
+    .footer-link.secondary {
+      color: var(--muted);
+      border: 1px solid var(--rule);
+    }
+
+    .footer-link.secondary:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.4);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 700px) {
+      nav, .doc-header, .doc-body, .doc-footer-nav, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .trouble-row { grid-template-columns: 1fr; gap: 0.2rem; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .doc-header > * {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .doc-label { animation-delay: 0.1s; }
+    .doc-title { animation-delay: 0.2s; }
+    .doc-subtitle { animation-delay: 0.3s; }
+    .doc-meta { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
+    <a href="cisco-vpn.html" class="nav-back">← Back to case study</a>
+  </nav>
+
+  <!-- DOCUMENT HEADER -->
+  <div class="doc-header">
+    <div class="doc-label">Technical Document · Portfolio Sample</div>
+    <h1 class="doc-title">Connecting to Your Company Network Remotely</h1>
+    <div class="doc-subtitle">A Guide to Cisco Secure Client</div>
+    <div class="doc-meta">
+      <span>Audience: Non-technical remote employees</span>
+      <span>Platform: Windows &amp; macOS</span>
+      <span>Product: Cisco Secure Client 5.x</span>
+    </div>
+  </div>
+
+  <!-- DOCUMENT BODY -->
+  <div class="doc-body">
+
+    <h2>Introduction</h2>
+    <p>This guide explains how to connect to your company's network securely from home or any remote location using Cisco Secure Client, a VPN (Virtual Private Network) application. After reading this guide, you will be able to:</p>
+    <ul class="intro-list">
+      <li>Connect independently.</li>
+      <li>Understand why the connection is required.</li>
+      <li>Troubleshoot a failed connection.</li>
+    </ul>
+    <p class="scope-note">This guide covers Windows and macOS computers. It does not cover mobile devices or the initial installation of Cisco Secure Client. If you have not yet installed the application, contact your IT department before continuing.</p>
+
+    <h2>Key Terms, Simply Explained</h2>
+
+    <div class="term-block">
+      <div class="term-name">VPN</div>
+      <div class="term-def">A Virtual Private Network (VPN) is a security tool that creates an encrypted connection between your computer and the corporate server. Think of it as a secure, private tunnel through the public internet. The connection allows remote access to company resources.</div>
+    </div>
+
+    <div class="term-block">
+      <div class="term-name">VPN Tunnel</div>
+      <div class="term-def">A VPN tunnel is a protected channel that allows data to travel through the internet privately. Think of it as a sealed envelope traveling through a public postal system — anyone can see the envelope is moving, but no one can read what is inside.</div>
+    </div>
+
+    <div class="term-block">
+      <div class="term-name">Encryption</div>
+      <div class="term-def">Encryption is the process of scrambling data so that only authorized parties can read it. Think of it as a lock on your data — only someone with the right key can open it.</div>
+    </div>
+
+    <h2>Before You Connect</h2>
+
+    <div class="prereq-block">
+      <div class="prereq-label">Credentials</div>
+      <p>You will use your username and password to connect to the company server. You get them from the IT team. Make sure you have them before proceeding.</p>
+    </div>
+
+    <div class="prereq-block">
+      <div class="prereq-label">Software check</div>
+      <p>Before continuing, make sure Cisco Secure Client is installed on your computer. The IT department is responsible for software installation and configuration.</p>
+    </div>
+
+    <div class="prereq-block">
+      <div class="prereq-label">Multi-Factor Authentication (MFA)</div>
+      <p>Your organization might require MFA to verify your identity. This could mean receiving a code on your phone or using an authenticator app. Make sure your phone is available.</p>
+    </div>
+
+    <h2>Connecting to the Corporate Network</h2>
+    <p>The steps are identical on macOS and Windows, except for step 1.</p>
+
+    <ol class="steps">
+      <li class="step">
+        <span class="step-num">1</span>
+        <div class="step-content">
+          Open the Cisco Secure Client application.
+          <div class="platform-note">
+            <strong>Windows:</strong> Start Menu → All Apps → Cisco folder → Cisco Secure Client.<br>
+            <strong>macOS:</strong> Finder → Applications → Cisco folder → Cisco Secure Client.
+          </div>
+          <div class="note-box" style="margin-top:0.75rem;">
+            <strong>⚠ macOS only:</strong> During initial operation, a prompt will appear asking to approve a system extension. Click <strong>Allow</strong>.
+          </div>
+        </div>
+      </li>
+      <li class="step">
+        <span class="step-num">2</span>
+        <div class="step-content">In the VPN field, enter the server address provided by your IT department.</div>
+      </li>
+      <li class="step">
+        <span class="step-num">3</span>
+        <div class="step-content">Click <strong>Connect</strong>.</div>
+      </li>
+      <li class="step">
+        <span class="step-num">4</span>
+        <div class="step-content">Enter your username and password, then click <strong>OK</strong>.</div>
+      </li>
+      <li class="step">
+        <span class="step-num">5</span>
+        <div class="step-content">If your organization requires MFA, approve the authentication request on your phone.</div>
+      </li>
+      <li class="step">
+        <span class="step-num">6</span>
+        <div class="step-content">When connected, the Cisco Secure Client icon in your taskbar (Windows) or menu bar (macOS) changes to indicate an active connection.</div>
+      </li>
+    </ol>
+
+    <h2>Troubleshooting</h2>
+
+    <div class="trouble-entry">
+      <div class="trouble-symptom">"Unable to connect to server"</div>
+      <div class="trouble-body">
+        <div class="trouble-row">
+          <span class="trouble-key">Cause</span>
+          <span class="trouble-val">The server address is incorrect. The application cannot find any server at that address.</span>
+        </div>
+        <div class="trouble-row">
+          <span class="trouble-key">Solution</span>
+          <span class="trouble-val">Contact your IT department for the correct address. A server address typically follows this format: <code>vpn.company.com</code></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trouble-entry">
+      <div class="trouble-symptom">"Authentication failed"</div>
+      <div class="trouble-body">
+        <div class="trouble-row">
+          <span class="trouble-key">Cause</span>
+          <span class="trouble-val">Incorrect username or password, or both.</span>
+        </div>
+        <div class="trouble-row">
+          <span class="trouble-key">Solution</span>
+          <div>
+            <ol class="trouble-steps">
+              <li>Re-enter your credentials carefully.</li>
+              <li>If the error persists, contact your IT department to reset your credentials.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trouble-entry">
+      <div class="trouble-symptom">"Access denied" after successful login</div>
+      <div class="trouble-body">
+        <div class="trouble-row">
+          <span class="trouble-key">Cause</span>
+          <span class="trouble-val">Your account is assigned to the wrong group and does not have permission to access the requested resources.</span>
+        </div>
+        <div class="trouble-row">
+          <span class="trouble-key">Solution</span>
+          <span class="trouble-val">Contact your IT department to verify which group your account should be assigned to.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trouble-entry">
+      <div class="trouble-symptom">"No internet connection"</div>
+      <div class="trouble-body">
+        <div class="trouble-row">
+          <span class="trouble-key">Cause</span>
+          <span class="trouble-val">Cisco Secure Client requires an active internet connection. Your connection may be off, too slow, or unstable.</span>
+        </div>
+        <div class="trouble-row">
+          <span class="trouble-key">Solution</span>
+          <div>
+            <ol class="trouble-steps">
+              <li>Open a web page. If it does not load, your internet connection is off or too slow.</li>
+              <li>Check that Wi-Fi is turned on.</li>
+              <li>If Wi-Fi is on, restart your router.</li>
+              <li>If none of the above works, contact your internet service provider.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trouble-entry">
+      <div class="trouble-symptom">"Session timed out" or MFA request missed</div>
+      <div class="trouble-body">
+        <div class="trouble-row">
+          <span class="trouble-key">Cause</span>
+          <span class="trouble-val">The MFA approval window expired. If you missed the push notification, the request was automatically declined.</span>
+        </div>
+        <div class="trouble-row">
+          <span class="trouble-key">Solution</span>
+          <div>
+            <p style="font-size:0.88rem; color:var(--ink); margin-bottom:0.4rem;">Before connecting again, make sure:</p>
+            <ol class="trouble-steps">
+              <li>Your phone's notification volume is on.</li>
+              <li>Do Not Disturb is turned off.</li>
+              <li>The MFA app is open and ready.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <div class="doc-footer-nav">
+    <a href="cisco-vpn.html" class="footer-link primary">← Read the case study</a>
+    <a href="index.html" class="footer-link secondary">Back to portfolio</a>
+  </div>
+
+  <footer>
+    <span>Eyal Tabib · Technical Writer · Portfolio Sample</span>
+    <span>Source: cisco.com/learn/topics/small-business/how-does-a-vpn-work.html</span>
+  </footer>
+
+</body>
+</html>

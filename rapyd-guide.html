@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Links — Rapyd API Reference · Eyal Tabib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f0e8;
+      --accent: #c84b2f;
+      --accent-light: #f0d9d3;
+      --muted: #7a7060;
+      --rule: #d4cfc4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    /* DOCUMENT HEADER */
+    .doc-header {
+      padding: 8rem 3rem 3rem;
+      max-width: 860px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .doc-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .doc-label::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .doc-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .doc-meta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* DOCUMENT BODY */
+    .doc-body {
+      max-width: 860px;
+      padding: 0 3rem 6rem;
+    }
+
+    .doc-body h2 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      letter-spacing: -0.01em;
+      margin: 3rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .doc-body h3 {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 2rem 0 0.75rem;
+    }
+
+    .doc-body p {
+      font-size: 0.97rem;
+      color: var(--ink);
+      margin: 0.9rem 0;
+      max-width: 680px;
+    }
+
+    /* SCOPE NOTE */
+    .scope-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid var(--rule);
+      margin: 1.25rem 0 2rem;
+      max-width: 640px;
+    }
+
+    /* DEFINITION BLOCK */
+    .definition-block {
+      margin: 1.5rem 0;
+      padding: 1.25rem 1.5rem;
+      border-left: 3px solid var(--accent);
+      background: #ede8de;
+      max-width: 680px;
+    }
+
+    .definition-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .definition-text {
+      font-size: 0.97rem;
+      color: var(--ink);
+    }
+
+    /* WORKFLOW */
+    .workflow {
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      max-width: 680px;
+    }
+
+    .workflow-actor {
+      background: var(--paper);
+    }
+
+    .workflow-actor-header {
+      padding: 0.75rem 1.25rem;
+      background: #ede8de;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .workflow-actor-header.you { color: var(--accent); }
+    .workflow-actor-header.rapyd { color: #2a5a7a; }
+
+    .workflow-steps {
+      list-style: none;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .workflow-steps li {
+      font-size: 0.92rem;
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      counter-increment: wf-step;
+    }
+
+    .workflow-steps li::before {
+      content: counter(wf-step) '.';
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+      min-width: 1rem;
+    }
+
+    .workflow-actor { counter-reset: wf-step; }
+
+    /* PARAMETER TABLES */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .param-table thead tr {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .param-table thead th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .param-table tbody tr {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .param-table tbody tr:nth-child(even) {
+      background: #ede8de;
+    }
+
+    .param-table tbody td {
+      padding: 0.75rem 1rem;
+      vertical-align: top;
+    }
+
+    .param-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .param-required {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .param-required.yes {
+      color: #2a7a3b;
+      font-weight: 500;
+    }
+
+    /* FX LIST */
+    .field-list {
+      list-style: none;
+      margin: 0.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .field-list li {
+      font-size: 0.92rem;
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .field-list li::before {
+      content: '—';
+      color: var(--rule);
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+
+    .field-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    /* FOOTER NAV */
+    .doc-footer-nav {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .footer-link.primary { background: var(--ink); color: var(--paper); }
+    .footer-link.primary:hover { background: var(--accent); }
+    .footer-link.secondary { color: var(--muted); border: 1px solid var(--rule); }
+    .footer-link.secondary:hover { color: var(--ink); border-color: var(--ink); }
+
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.4);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 700px) {
+      nav, .doc-header, .doc-body, .doc-footer-nav, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .param-table { font-size: 0.8rem; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .doc-header > * { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .doc-label { animation-delay: 0.1s; }
+    .doc-title { animation-delay: 0.2s; }
+    .doc-meta { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
+    <a href="rapyd.html" class="nav-back">← Back to case study</a>
+  </nav>
+
+  <div class="doc-header">
+    <div class="doc-label">Technical Document · Portfolio Sample</div>
+    <h1 class="doc-title">Payment Links</h1>
+    <div class="doc-meta">
+      <span>Audience: Backend developers</span>
+      <span>Product: Rapyd Collect</span>
+      <span>Type: API Reference</span>
+    </div>
+  </div>
+
+  <div class="doc-body">
+
+    <p class="scope-note">This page explains Payment Link workflow and code. It does not explain Rapyd Checkout's workflow or code, which assumes you are already familiar with.</p>
+
+    <div class="definition-block">
+      <div class="definition-label">Definition</div>
+      <div class="definition-text">A Payment Link is a reusable hosted payment page that accepts fixed or customer-defined amounts — designed to be shared via SMS, WhatsApp, or email, rather than embedded in a specific transaction flow.</div>
+    </div>
+
+    <h2>Payment Link Workflow</h2>
+
+    <div class="workflow">
+      <div class="workflow-actor">
+        <div class="workflow-actor-header you">You</div>
+        <ul class="workflow-steps">
+          <li>Generate a payment link via API request.</li>
+        </ul>
+      </div>
+      <div class="workflow-actor">
+        <div class="workflow-actor-header">The customer</div>
+        <ul class="workflow-steps">
+          <li>Clicks on the payment link — a pre-payment page is displayed.</li>
+          <li>Sees a fixed amount OR enters a custom amount to pay.</li>
+          <li>Clicks Continue.</li>
+        </ul>
+      </div>
+      <div class="workflow-actor">
+        <div class="workflow-actor-header rapyd">Rapyd</div>
+        <ul class="workflow-steps">
+          <li>Redirects the customer to the payment page.</li>
+        </ul>
+      </div>
+      <div class="workflow-actor">
+        <div class="workflow-actor-header">The customer</div>
+        <ul class="workflow-steps">
+          <li>Completes the payment with their desired payment method.</li>
+        </ul>
+      </div>
+      <div class="workflow-actor">
+        <div class="workflow-actor-header rapyd">Rapyd</div>
+        <ul class="workflow-steps">
+          <li>Sends a webhook.</li>
+        </ul>
+      </div>
+      <div class="workflow-actor">
+        <div class="workflow-actor-header you">You</div>
+        <ul class="workflow-steps">
+          <li>Notify the customer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Create Payment Link</h2>
+    <p>The following tables describe the path and body parameters for the Create Payment Link API request.</p>
+
+    <h3>Path Parameters</h3>
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="param-name">max_payments</span></td>
+          <td><span class="param-required">no</span></td>
+          <td>The number of times a payment link can be used for payment before expiring.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Body Parameters</h3>
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="param-name">amount</span></td>
+          <td><span class="param-required yes">yes</span></td>
+          <td>The amount of the payment, in units of the currency defined in <code>currency</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">country</span></td>
+          <td><span class="param-required yes">yes</span></td>
+          <td>The two-letter ISO 3166-1 ALPHA-2 code for the country.</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">currency</span></td>
+          <td><span class="param-required yes">yes</span></td>
+          <td>The currency of the transaction. Three-letter ISO 4217 code.</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">fixed_side</span></td>
+          <td><span class="param-required">no</span></td>
+          <td>Indicates whether the fixed amount applies to the buyer or the seller. See Payment Links With FX.</td>
+        </tr>
+        <tr>
+          <td><span class="param-name">requested_currency</span></td>
+          <td><span class="param-required">no</span></td>
+          <td>The currency of the fixed side in an FX transaction. Three-letter ISO 4217 code. See Payment Links With FX.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Payment Links With FX</h2>
+
+    <div class="definition-block">
+      <div class="definition-label">Definition</div>
+      <div class="definition-text">Foreign Exchange (FX) allows your customer to pay in their local currency while you receive the funds in a different currency. Rapyd handles the conversion automatically.</div>
+    </div>
+
+    <p>Use the following fields to configure the FX conversion:</p>
+
+    <ul class="field-list">
+      <li><span class="field-name">fixed_side</span> — specifies whether the buyer or seller pays a fixed amount.</li>
+      <li><span class="field-name">requested_currency</span> — defines the currency of the fixed side.</li>
+    </ul>
+
+  </div>
+
+  <div class="doc-footer-nav">
+    <a href="rapyd.html" class="footer-link primary">← Read the case study</a>
+    <a href="index.html" class="footer-link secondary">Back to portfolio</a>
+  </div>
+
+  <footer>
+    <span>Eyal Tabib · Technical Writer · Portfolio Sample</span>
+    <span>Source: docs.rapyd.net/en/payment-links-445534.html</span>
+  </footer>
+
+</body>
+</html>

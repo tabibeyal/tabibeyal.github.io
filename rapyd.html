@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rapyd Payment Links API — Eyal Tabib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f0e8;
+      --accent: #c84b2f;
+      --accent-light: #f0d9d3;
+      --muted: #7a7060;
+      --rule: #d4cfc4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    .project-hero {
+      padding: 8rem 3rem 4rem;
+      border-bottom: 1px solid var(--rule);
+      max-width: 860px;
+    }
+
+    .project-category {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .project-category::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .project-subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+    }
+
+    .meta-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.5rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    .meta-key { color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+    .meta-val { color: var(--ink); }
+
+    .content { max-width: 860px; padding: 0 3rem; }
+
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 1rem;
+      max-width: 680px;
+    }
+
+    p strong { color: var(--ink); font-weight: 500; }
+
+    .failures {
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .failure-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1rem 1.25rem;
+      background: #ede8de;
+      border-left: 3px solid var(--accent);
+    }
+
+    .failure-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 0.15rem;
+    }
+
+    .failure-text { font-size: 0.9rem; color: var(--ink); }
+    .failure-text strong { display: block; margin-bottom: 0.2rem; font-weight: 500; }
+    .failure-detail { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+
+    /* BEFORE / AFTER TEXT */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 1.5rem 0;
+    }
+
+    .comparison-panel {
+      background: var(--paper);
+      padding: 1.75rem;
+    }
+
+    .comparison-panel.after { background: #ede8de; }
+
+    .comparison-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comparison-label.before-label { color: var(--muted); }
+    .comparison-label.after-label { color: #2a7a3b; }
+
+    .comparison-label::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .comparison-text {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--ink);
+      font-style: italic;
+      border-left: 2px solid var(--rule);
+      padding-left: 1rem;
+    }
+
+    .comparison-panel.after .comparison-text {
+      border-color: #2a7a3b;
+      font-style: normal;
+    }
+
+    .comparison-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding: 0.85rem 1.1rem;
+      background: var(--accent-light);
+      border-left: 2px solid var(--accent);
+      font-style: italic;
+      margin-top: 1.5rem;
+    }
+
+    /* PROCESS */
+    .process-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 1.5rem 0;
+    }
+
+    .process-step {
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      align-items: start;
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1;
+      opacity: 0.4;
+    }
+
+    .step-text { font-size: 0.92rem; color: var(--ink); padding-top: 0.2rem; }
+    .step-text strong { display: block; font-weight: 500; margin-bottom: 0.25rem; }
+    .step-detail { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin-top: 1.5rem;
+    }
+
+    .skill-cell {
+      background: var(--paper);
+      padding: 1.25rem 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .skill-cell::before {
+      content: '→';
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .project-cta {
+      padding: 4rem 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.75rem;
+      transition: background 0.2s;
+    }
+
+    .cta-link:hover { background: var(--accent); }
+
+    .cta-link.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+    }
+
+    .cta-link.secondary:hover {
+      background: var(--accent-light);
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.4);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.5rem; }
+      .project-hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .comparison { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .project-cta { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .project-hero > * { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .project-category { animation-delay: 0.1s; }
+    h1 { animation-delay: 0.2s; }
+    .project-subtitle { animation-delay: 0.3s; }
+    .meta-table { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
+    <a href="index.html" class="nav-back">← Back to portfolio</a>
+  </nav>
+
+  <div class="project-hero">
+    <div class="project-category">API documentation rewrite</div>
+    <h1>Rapyd Payment<br>Links API</h1>
+    <p class="project-subtitle">Restructuring developer documentation for a defined technical audience</p>
+    <div class="meta-table">
+      <span class="meta-key">Source</span>
+      <span class="meta-val">Rapyd — "Payment Links" (docs.rapyd.net)</span>
+      <span class="meta-key">Deliverable</span>
+      <span class="meta-val">Restructured API reference for backend developers integrating Rapyd Collect</span>
+      <span class="meta-key">Tools applied</span>
+      <span class="meta-val">Audience analysis, persona definition, information hierarchy, term definition writing</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- THE PROBLEM -->
+    <div class="section">
+      <div class="section-label">01 — The Problem</div>
+      <h2>The wrong order for the wrong reader</h2>
+      <p>
+        Rapyd's original document presented <strong>workflow steps before defining key concepts</strong>,
+        included end-user UI walkthroughs irrelevant to developers, and contained a section whose
+        title did not match its content.
+      </p>
+      <p>
+        A developer arriving from the Rapyd Checkout documentation would encounter undefined terms
+        and misdirected content before reaching the API reference — the only part they actually needed.
+      </p>
+
+      <div class="failures">
+        <div class="failure-item">
+          <span class="failure-num">01</span>
+          <div class="failure-text">
+            <strong>Wrong information order</strong>
+            <span class="failure-detail">Workflow steps appeared before Payment Links were defined. A developer cannot follow a workflow for a concept they have not yet been introduced to.</span>
+          </div>
+        </div>
+        <div class="failure-item">
+          <span class="failure-num">02</span>
+          <div class="failure-text">
+            <strong>Irrelevant content for the persona</strong>
+            <span class="failure-detail">The document included a Payment Link Example section — a UI walkthrough for end users. A backend developer writing API integration code has no use for this content.</span>
+          </div>
+        </div>
+        <div class="failure-item">
+          <span class="failure-num">03</span>
+          <div class="failure-text">
+            <strong>Misleading section title</strong>
+            <span class="failure-detail">A section title did not match its content, sending the developer to the wrong place when scanning for specific information.</span>
+          </div>
+        </div>
+        <div class="failure-item">
+          <span class="failure-num">04</span>
+          <div class="failure-text">
+            <strong>Misplaced reusability note</strong>
+            <span class="failure-detail">A note about Payment Link reusability appeared mid-workflow, interrupting the task flow at a point where it was not relevant.</span>
+          </div>
+        </div>
+        <div class="failure-item">
+          <span class="failure-num">05</span>
+          <div class="failure-text">
+            <strong>Undefined technical term (FX)</strong>
+            <span class="failure-detail">The FX section introduced foreign exchange parameters without defining what FX means in this context or why a developer would use it.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEFORE / AFTER -->
+    <div class="section">
+      <div class="section-label">02 — Before &amp; After</div>
+      <h2>The same content, restructured</h2>
+      <p>The original document opens with a workflow step before defining what a Payment Link is. The rewrite opens with a scope statement and a precise definition.</p>
+
+      <div class="comparison">
+        <div class="comparison-panel">
+          <div class="comparison-label before-label">Original opening</div>
+          <div class="comparison-text">
+            "To create a payment link, send a Create Payment Link request to Rapyd..."
+          </div>
+        </div>
+        <div class="comparison-panel after">
+          <div class="comparison-label after-label">Rewritten opening</div>
+          <div class="comparison-text">
+            This page explains Payment Link workflow and code. It does not explain Rapyd Checkout's workflow or code, which assumes you are already familiar with.<br><br>
+            <strong>Definition:</strong> A Payment Link is a reusable hosted payment page that accepts fixed or customer-defined amounts — designed to be shared via SMS, WhatsApp, or email, rather than embedded in a specific transaction flow.
+          </div>
+        </div>
+      </div>
+      <div class="comparison-note">
+        The rewrite applies <strong>scope and non-scope definition</strong> first, then introduces the concept before any action is required. The developer knows what they are building before they start.
+      </div>
+
+      <br>
+
+      <p>The workflow section was restructured by actor — separating what you do, what the customer does, and what Rapyd does — to eliminate cognitive overload and clarify responsibility.</p>
+
+      <div class="comparison">
+        <div class="comparison-panel">
+          <div class="comparison-label before-label">Original workflow</div>
+          <div class="comparison-text">
+            Single undifferentiated list mixing developer actions, customer actions, and Rapyd system actions — no indication of who performs each step.
+          </div>
+        </div>
+        <div class="comparison-panel after">
+          <div class="comparison-label after-label">Rewritten workflow</div>
+          <div class="comparison-text">
+            <strong>You:</strong> Generate a payment link via API request.<br><br>
+            <strong>The customer:</strong> Clicks the link → sees amount → clicks Continue.<br><br>
+            <strong>Rapyd:</strong> Redirects to payment page → sends webhook.<br><br>
+            <strong>You:</strong> Notify the customer.
+          </div>
+        </div>
+      </div>
+      <div class="comparison-note">
+        Actor-based workflow writing makes responsibility explicit. Each actor's steps are grouped together, so the developer immediately sees which steps require action on their side.
+      </div>
+    </div>
+
+    <!-- THE PROCESS -->
+    <div class="section">
+      <div class="section-label">03 — The Process</div>
+      <h2>How I approached the rewrite</h2>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">1</span>
+          <div class="step-text">
+            <strong>Defined the target audience from context</strong>
+            <span class="step-detail">Used the document's location in the Rapyd help center hierarchy to identify the reader: a backend developer already familiar with Rapyd Checkout, now integrating Rapyd Collect.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">2</span>
+          <div class="step-text">
+            <strong>Identified five documentation failures</strong>
+            <span class="step-detail">Mapped each failure to a specific principle: information order, audience relevance, section titling, content placement, and term definition.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">3</span>
+          <div class="step-text">
+            <strong>Prioritized by severity and restructured</strong>
+            <span class="step-detail">Ordered fixes by impact on the developer's task flow. Wrong information order and undefined terms were highest priority — they block understanding before the developer reaches the API reference.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">4</span>
+          <div class="step-text">
+            <strong>Removed the Payment Link Example section</strong>
+            <span class="step-detail">The section was relevant to end users, not developers. Removing it shortened the document and kept the focus on the developer's actual task.</span>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">5</span>
+          <div class="step-text">
+            <strong>Split the workflow by actor</strong>
+            <span class="step-detail">Reorganized the workflow into three actor groups — You, The customer, Rapyd — so the developer immediately sees which steps require action on their side.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY SKILLS -->
+    <div class="section">
+      <div class="section-label">04 — Key Skills Demonstrated</div>
+      <h2>What this project shows</h2>
+      <div class="skills-grid">
+        <div class="skill-cell">Audience analysis and persona definition</div>
+        <div class="skill-cell">Scope and non-scope definition</div>
+        <div class="skill-cell">Information hierarchy restructuring</div>
+        <div class="skill-cell">Plain-language term definition</div>
+        <div class="skill-cell">Content removal decisions</div>
+        <div class="skill-cell">Actor-based workflow writing</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="project-cta">
+    <a href="rapyd-guide.html" class="cta-link">Read the full document →</a>
+    <a href="index.html" class="cta-link secondary">← Back to portfolio</a>
+  </div>
+
+  <footer>
+    <span>Eyal Tabib · Technical Writer · Portfolio</span>
+    <span>Source: docs.rapyd.net/en/payment-links-445534.html</span>
+  </footer>
+
+</body>
+</html>

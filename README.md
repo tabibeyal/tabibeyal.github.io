@@ -9,6 +9,7 @@ Visit my portfolio site: [tabibeyal.github.io](https://tabibeyal.github.io)
 - **NextDNS Security Guide** — End-user security documentation
 - **Cisco VPN User Guide** — End-user guide rewrite
 - **Rapyd Payment Links** — API documentation analysis and rewrite
+- **UX Writing & Microcopy Observations** — Interface labeling analysis and fix suggestions
 
 ## Background
 Transitioning into technical writing with a background in 

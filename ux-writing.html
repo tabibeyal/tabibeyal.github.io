@@ -208,9 +208,9 @@
     }
 
     .obs-body {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
     }
 
     .obs-field-label {
@@ -398,7 +398,7 @@
     @media (max-width: 700px) {
       nav { padding: 1rem 1.5rem; }
       .project-hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .obs-body { grid-template-columns: 1fr; gap: 1rem; }
+      .obs-body { gap: 1rem; }
       .obs-header { flex-direction: column; gap: 0.25rem; }
       .project-cta { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
     }

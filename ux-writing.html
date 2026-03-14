@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UX Writing Observations — Eyal Tabib</title>
+  <meta name="description" content="A collection of UX writing and microcopy observations: analyzing real interface labeling problems and suggesting concrete fixes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f5f0e8;
+      --accent: #c84b2f;
+      --accent-light: #f0d9d3;
+      --muted: #7a7060;
+      --rule: #d4cfc4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .project-hero {
+      padding: 8rem 3rem 4rem;
+      border-bottom: 1px solid var(--rule);
+      max-width: 860px;
+    }
+
+    .project-category {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .project-category::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .project-subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      max-width: 620px;
+    }
+
+    .meta-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.5rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    .meta-key {
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .meta-val { color: var(--ink); }
+
+    /* ── CONTENT ── */
+    .content { max-width: 860px; padding: 0 3rem; }
+
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-intro {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 2rem;
+      max-width: 680px;
+    }
+
+    /* ── OBSERVATION CARDS ── */
+    .obs-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .obs-card {
+      background: #ffffff;
+      border-left: 3px solid var(--accent);
+      padding: 1.75rem 2rem;
+    }
+
+    .obs-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .obs-source {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      line-height: 1.3;
+    }
+
+    .obs-element {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .obs-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .obs-field-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .obs-field-text {
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── AUDIT CARDS (larger, for navigation audits) ── */
+    .audit-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .audit-card {
+      background: #ffffff;
+      border-left: 3px solid var(--accent);
+      padding: 2rem 2rem 2.25rem;
+    }
+
+    .audit-source {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      line-height: 1.3;
+      margin-bottom: 0.35rem;
+    }
+
+    .audit-element {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .audit-field {
+      margin-bottom: 1.5rem;
+    }
+
+    .audit-field:last-child { margin-bottom: 0; }
+
+    .audit-field-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .audit-field-text {
+      font-size: 0.92rem;
+      color: var(--ink);
+      font-weight: 300;
+      line-height: 1.65;
+      max-width: 680px;
+    }
+
+    .audit-field-text strong {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* Tables inside audit cards */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.85rem;
+    }
+
+    .audit-table th {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 0.5rem 1rem 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-weight: 400;
+    }
+
+    .audit-table td {
+      padding: 0.5rem 1rem 0.5rem 0;
+      border-bottom: 1px solid rgba(212,207,196,0.5);
+      font-weight: 300;
+      color: var(--ink);
+      vertical-align: top;
+    }
+
+    .audit-table tr:last-child td { border-bottom: none; }
+
+    /* Suggestion list inside audit cards */
+    .suggestion-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .suggestion-list li {
+      font-size: 0.92rem;
+      color: var(--ink);
+      font-weight: 300;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .suggestion-list li::before {
+      content: '→';
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    /* ── CTA ── */
+    .project-cta {
+      padding: 4rem 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.75rem;
+      transition: background 0.2s;
+    }
+
+    .cta-link:hover { background: var(--accent); }
+
+    .cta-link.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+    }
+
+    .cta-link.secondary:hover {
+      background: var(--accent-light);
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.4);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.5rem; }
+      .project-hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .obs-body { grid-template-columns: 1fr; gap: 1rem; }
+      .obs-header { flex-direction: column; gap: 0.25rem; }
+      .project-cta { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .project-hero > * {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .project-category { animation-delay: 0.1s; }
+    h1 { animation-delay: 0.2s; }
+    .project-subtitle { animation-delay: 0.3s; }
+    .meta-table { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Eyal · Technical Writer</a>
+    <a href="index.html" class="nav-back">← Back to portfolio</a>
+  </nav>
+
+  <main>
+
+  <div class="project-hero">
+    <div class="project-category">UX writing</div>
+    <h1>UX Writing &amp;<br>Microcopy Observations</h1>
+    <p class="project-subtitle">A growing collection of interface labeling problems found in real products — each analyzed using a What / Problem / Suggestion structure.</p>
+    <div class="meta-table">
+      <span class="meta-key">Format</span>
+      <span class="meta-val">What → Problem → Suggestion (per observation)</span>
+      <span class="meta-key">Scope</span>
+      <span class="meta-val">Button labels, placeholder text, icon tooltips, navigation consistency</span>
+      <span class="meta-key">Languages</span>
+      <span class="meta-val">Hebrew, English</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SECTION 01: MICROCOPY -->
+    <div class="section">
+      <div class="section-label">01 — Microcopy Observations</div>
+      <h2>Single-element problems</h2>
+      <p class="section-intro">
+        Each observation focuses on one UI element — a button, a search field, an icon — where
+        the label creates confusion, inconsistency, or unnecessary friction.
+      </p>
+
+      <div class="obs-cards">
+
+        <!-- Israel Meteorological Service -->
+        <div class="obs-card">
+          <div class="obs-header">
+            <span class="obs-source">Israel Meteorological Service</span>
+            <span class="obs-element">Toggle button</span>
+          </div>
+          <div class="obs-body">
+            <div>
+              <div class="obs-field-label">What</div>
+              <div class="obs-field-text">A forecast paragraph is cut off mid-text. A button labeled "מידע נוסף" (Additional Information) reveals the rest. Once expanded, it changes to "הראה פחות" (Show Less).</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Problem</div>
+              <div class="obs-field-text">"Additional Information" implies separate, supplementary content — not the continuation of the same paragraph. The two button states are not a logical pair: "Additional Information" and "Show Less" follow different naming patterns.</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Suggestion</div>
+              <div class="obs-field-text">Replace "מידע נוסף" with "הצג יותר" (Show More), creating a consistent pair: "הצג יותר" / "הצג פחות" (Show More / Show Less).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alison.com -->
+        <div class="obs-card">
+          <div class="obs-header">
+            <span class="obs-source">Alison.com</span>
+            <span class="obs-element">Search fields</span>
+          </div>
+          <div class="obs-body">
+            <div>
+              <div class="obs-field-label">What</div>
+              <div class="obs-field-text">Two search fields serve the same function. The navigation bar reads "What do you want to learn" while the main area reads "What do you want to learn today?"</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Problem</div>
+              <div class="obs-field-text">Inconsistent wording signals that the fields might behave differently. The dominant element encourages browsing for a new course, while "Continue Learning" — the likely goal for returning users — sits small at the edge of the navigation bar.</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Suggestion</div>
+              <div class="obs-field-text">Use identical placeholder text in both fields. For logged-in users, give "Continue Learning" visual priority — as the central call to action or with greater prominence in the header.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AliExpress -->
+        <div class="obs-card">
+          <div class="obs-header">
+            <span class="obs-source">AliExpress</span>
+            <span class="obs-element">Sidebar icons</span>
+          </div>
+          <div class="obs-body">
+            <div>
+              <div class="obs-field-label">What</div>
+              <div class="obs-field-text">A floating sidebar has four icon buttons with no descriptive labels. The top button shows a promotional tooltip on hover; the remaining three have no hover response at all.</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Problem</div>
+              <div class="obs-field-text">Icons without text labels force users to guess their function. The first button's hover tooltip sets an expectation the others should respond too — but they don't. Users must click each button to discover what it does.</div>
+            </div>
+            <div>
+              <div class="obs-field-label">Suggestion</div>
+              <div class="obs-field-text">Add descriptive hover tooltips to all four buttons — one or two words naming the function. Keep promotional content separate from navigation labels.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 02: NAVIGATION AUDITS -->
+    <div class="section">
+      <div class="section-label">02 — Navigation Audits</div>
+      <h2>System-level labeling problems</h2>
+      <p class="section-intro">
+        These observations map how inconsistent labeling across multiple entry points
+        creates confusion at the navigation level — not just within a single element.
+      </p>
+
+      <div class="audit-cards">
+
+        <!-- TAU Registration -->
+        <div class="audit-card">
+          <div class="audit-source">Tel Aviv University — Registration Entry Points</div>
+          <div class="audit-element">Homepage navigation</div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">What</div>
+            <div class="audit-field-text">
+              The homepage offers four separate links to the same registration form, each worded differently:
+            </div>
+            <table class="audit-table">
+              <thead>
+                <tr><th>Label</th><th>Location</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>"רישום לאוניברסיטה" (black button)</td><td>Top navigation</td></tr>
+                <tr><td>"רישום לאוניברסיטה" (text link)</td><td>Secondary navigation</td></tr>
+                <tr><td>"הרשמה"</td><td>Upper strip</td></tr>
+                <tr><td>"הרשמה ללימודים"</td><td>Footer</td></tr>
+              </tbody>
+            </table>
+            <div class="audit-field-text">
+              The form itself presents a button labeled "כניסה" (Enter/Login) — a label that does not describe the action a first-time applicant is taking.
+            </div>
+          </div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">Problem</div>
+            <div class="audit-field-text">
+              The labels alternate between <strong>"רישום"</strong> and <strong>"הרשמה"</strong> — two Hebrew words for the same action — and vary in specificity. A prospective student may wonder whether each link leads somewhere different. The form's "כניסה" button adds ambiguity: it typically means login, not an action a first-time applicant would associate with starting registration.
+            </div>
+          </div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">Suggestion</div>
+            <ul class="suggestion-list">
+              <li>Standardize all registration links to a single label — either "רישום לאוניברסיטה" or "הרשמה לאוניברסיטה," consistently.</li>
+              <li>Replace "כניסה" on the form with a label that describes the action, such as "המשך להרשמה" (Continue to Registration) or "שלח פרטים" (Send Details).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TAU Contact -->
+        <div class="audit-card">
+          <div class="audit-source">Tel Aviv University — Contact Entry Points</div>
+          <div class="audit-element">Homepage navigation &amp; dropdown menu</div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">What</div>
+            <div class="audit-field-text">
+              A dropdown menu under "אפשר לעזור לך?" organizes contact options into two categories with five links. Outside the dropdown, several contact options appear independently:
+            </div>
+            <table class="audit-table">
+              <thead>
+                <tr><th>Label on homepage</th><th>Destination</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>"דברו איתנו" (Talk to Us)</td><td>Contact page with form and map</td></tr>
+                <tr><td>"אנחנו כאן לייעץ לך!" (We're Here to Advise You!)</td><td>Marketing page about advising</td></tr>
+                <tr><td>"היי, כיצד נוכל לסייע לך?" (Hi, How Can We Help?)</td><td>Live chat</td></tr>
+              </tbody>
+            </table>
+            <div class="audit-field-text">
+              Within the dropdown, two links in separate categories lead to the same external scheduling tool. The same contact form appears in three locations. The tone shifts from formal to promotional to casual across entry points.
+            </div>
+          </div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">Problem</div>
+            <div class="audit-field-text">
+              The dropdown provides a clear structure, but the rest of the homepage undermines it by duplicating destinations under different labels. A user who finds "אנחנו כאן לייעץ לך!" has no reason to know it leads to the same page as "סיוע בבחירת מסלול לימודים" in the dropdown. The tone shifts between entry points suggest different services, when in practice several reach the same destination.
+            </div>
+          </div>
+
+          <div class="audit-field">
+            <div class="audit-field-label">Suggestion</div>
+            <ul class="suggestion-list">
+              <li>Remove duplicate links outside the dropdown, or align their wording with the dropdown labels.</li>
+              <li>Consolidate the two paths to the scheduling tool into a single link within the dropdown.</li>
+              <li>Add a direct link to the scheduling tool on the advising page.</li>
+              <li>If the embedded form at the bottom of the homepage serves a purpose, add an anchor link from the navigation.</li>
+              <li>Align the tone across all contact touchpoints — for example: "דברו איתנו" (Talk to Us), "איך עובד הייעוץ האישי?" (How Does Personal Advising Work?), "צריכים עזרה?" (Need Help?).</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="project-cta">
+    <a href="index.html" class="cta-link secondary">← Back to portfolio</a>
+  </div>
+
+  </main>
+
+  <footer>
+    <span>Eyal Tabib · Technical Writer · Portfolio</span>
+    <span>UX Writing Observations</span>
+  </footer>
+
+</body>
+</html>

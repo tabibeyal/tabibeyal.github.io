@@ -140,7 +140,7 @@
     .meta-val { color: var(--ink); }
 
     /* ── CONTENT ── */
-    .content { max-width: 860px; padding: 0 3rem; }
+    .content { max-width: 1100px; padding: 0 3rem; }
 
     .section {
       padding: 4rem 0;
@@ -208,9 +208,9 @@
     }
 
     .obs-body {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
     }
 
     .obs-field-label {
@@ -398,6 +398,7 @@
     @media (max-width: 700px) {
       nav { padding: 1rem 1.5rem; }
       .project-hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .obs-body { grid-template-columns: 1fr; gap: 1rem; }
       .obs-header { flex-direction: column; gap: 0.25rem; }
       .project-cta { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
     }
@@ -552,8 +553,8 @@
               <tbody>
                 <tr><td>"רישום לאוניברסיטה" (black button)</td><td>Top navigation</td></tr>
                 <tr><td>"רישום לאוניברסיטה" (text link)</td><td>Secondary navigation</td></tr>
-                <tr><td>"הרשמה"</td><td>Upper strip</td></tr>
-                <tr><td>"הרשמה ללימודים"</td><td>Footer</td></tr>
+                <tr><td>"הרשמה" (Registration)</td><td>Upper strip</td></tr>
+                <tr><td>"הרשמה ללימודים" (Registration for Studies)</td><td>Footer</td></tr>
               </tbody>
             </table>
             <div class="audit-field-text">
@@ -564,14 +565,14 @@
           <div class="audit-field">
             <div class="audit-field-label">Problem</div>
             <div class="audit-field-text">
-              The labels alternate between <strong>"רישום"</strong> and <strong>"הרשמה"</strong> — two Hebrew words for the same action — and vary in specificity. A prospective student may wonder whether each link leads somewhere different. The form's "כניסה" button adds ambiguity: it typically means login, not an action a first-time applicant would associate with starting registration.
+              The labels alternate between <strong>"רישום"</strong> and <strong>"הרשמה"</strong> (both meaning registration) — two Hebrew words for the same action — and vary in specificity. A prospective student may wonder whether each link leads somewhere different. The form's "כניסה" button adds ambiguity: it typically means login, not an action a first-time applicant would associate with starting registration.
             </div>
           </div>
 
           <div class="audit-field">
             <div class="audit-field-label">Suggestion</div>
             <ul class="suggestion-list">
-              <li>Standardize all registration links to a single label — either "רישום לאוניברסיטה" or "הרשמה לאוניברסיטה," consistently.</li>
+              <li>Standardize all registration links to a single label — either "רישום לאוניברסיטה" or "הרשמה לאוניברסיטה" (both meaning University Registration), consistently.</li>
               <li>Replace "כניסה" on the form with a label that describes the action, such as "המשך להרשמה" (Continue to Registration) or "שלח פרטים" (Send Details).</li>
             </ul>
           </div>

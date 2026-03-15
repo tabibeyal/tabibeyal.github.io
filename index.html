@@ -344,6 +344,9 @@
 
     .project-card:hover::before { height: 100%; }
     .project-card:hover { background: #ede8de; }
+    .project-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 
     .project-category {
       font-family: var(--mono);

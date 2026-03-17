@@ -14,4 +14,4 @@ Visit my portfolio site: [tabibeyal.github.io](https://tabibeyal.github.io)
 ## Background
 Transitioning into technical writing with a background in 
 explaining complex technology to non-technical audiences.
-Currently completing a diploma in English.
+
